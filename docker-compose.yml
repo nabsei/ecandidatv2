@@ -1,0 +1,21 @@
+services:
+  database:
+    image: postgres:17-alpine
+    container_name: ecandidat-database-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ecandidat_db
+      POSTGRES_USER: ecandidat
+      POSTGRES_PASSWORD: ecandidat_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ecandidat -d ecandidat_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  postgres_dev_data:
