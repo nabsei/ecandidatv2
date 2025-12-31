@@ -1,0 +1,99 @@
+<div class="login-container">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>Connexion</mat-card-title>
+      <mat-card-subtitle
+        >Connectez-vous à votre compte eCandidat</mat-card-subtitle
+      >
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        @if (errorMessage()) {
+        <div class="error-message">
+          <mat-icon>error</mat-icon>
+          {{ errorMessage() }}
+        </div>
+        }
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Adresse email</mat-label>
+          <input
+            matInput
+            type="email"
+            formControlName="email"
+            placeholder="exemple@email.com"
+            autocomplete="email"
+          />
+          <mat-icon matPrefix>email</mat-icon>
+          @if (loginForm.controls.email.hasError('required')) {
+          <mat-error>L'email est requis</mat-error>
+          } @if (loginForm.controls.email.hasError('email')) {
+          <mat-error>Veuillez entrer un email valide</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Mot de passe</mat-label>
+          <input
+            matInput
+            [type]="hidePassword() ? 'password' : 'text'"
+            formControlName="password"
+            placeholder="Entrez votre mot de passe"
+            autocomplete="current-password"
+          />
+          <mat-icon matPrefix>lock</mat-icon>
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="'Afficher le mot de passe'"
+          >
+            <mat-icon>{{
+              hidePassword() ? "visibility_off" : "visibility"
+            }}</mat-icon>
+          </button>
+          @if (loginForm.controls.password.hasError('required')) {
+          <mat-error>Le mot de passe est requis</mat-error>
+          } @if (loginForm.controls.password.hasError('minlength')) {
+          <mat-error>Le mot de passe doit contenir au moins 6 caractères</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            class="submit-button"
+            [disabled]="loginForm.invalid || loading()"
+          >
+            @if (loading()) {
+              <mat-spinner diameter="20"></mat-spinner>
+            } @else {
+              <mat-icon>login</mat-icon>
+            }
+            @if (!loading()) {
+              Se connecter
+            }
+          </button>
+        </div>
+
+        <div class="form-links">
+          <a routerLink="/forgot-password" class="link">
+            J'ai oublié mon mot de passe
+          </a>
+          <a routerLink="/register" class="link">Créer un compte</a>
+        </div>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-button routerLink="/" color="warn">
+        <mat-icon>arrow_back</mat-icon>
+        Retour à l'accueil
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

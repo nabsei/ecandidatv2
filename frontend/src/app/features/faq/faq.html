@@ -1,0 +1,35 @@
+<div class="faq-container">
+  <h1>Foire aux Questions</h1>
+  <p class="subtitle">
+    Retrouvez ici les réponses aux questions les plus fréquentes concernant
+    votre candidature.
+  </p>
+
+  <mat-accordion class="faq-accordion">
+    @for (faq of faqs; track faq.question) {
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>{{ faq.question }}</mat-panel-title>
+      </mat-expansion-panel-header>
+      <p>{{ faq.answer }}</p>
+    </mat-expansion-panel>
+    }
+  </mat-accordion>
+
+  <mat-card class="doc-card">
+    <mat-card-header>
+      <mat-card-title>Documentation</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>Pour plus d'informations, veuillez consulter la documentation :</p>
+      <a
+        mat-raised-button
+        color="primary"
+        href="https://infoservices.umontpellier.fr/ecandidat_candidat/"
+        target="_blank"
+      >
+        Accéder à la Documentation
+      </a>
+    </mat-card-content>
+  </mat-card>
+</div>

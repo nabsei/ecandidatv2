@@ -1,0 +1,112 @@
+<div class="home-container">
+  <section class="hero-section">
+    <h1 class="hero-title">Bienvenue sur eCandidat</h1>
+    <div class="hero-logo">
+      <img
+        src="/assets/drapeau_occitanie.svg.png"
+        alt="Drapeau Occitanie"
+        class="occitanie-flag"
+      />
+    </div>
+    <p class="hero-subtitle">
+      La plateforme de candidature en ligne de l'Université d'Occitanie
+    </p>
+  </section>
+
+  <section class="features-section">
+    <div class="features-grid">
+      @for (feature of features; track feature.title) {
+      <mat-card class="feature-card">
+        @if (feature.image) {
+        <img
+          mat-card-image
+          [src]="feature.image"
+          [alt]="feature.title"
+          class="feature-image"
+        />
+        }
+        <mat-card-header>
+          <mat-icon mat-card-avatar class="feature-icon">{{
+            feature.icon
+          }}</mat-icon>
+          <mat-card-title>{{ feature.title }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>{{ feature.description }}</p>
+        </mat-card-content>
+      </mat-card>
+      }
+    </div>
+  </section>
+
+  <section class="info-section">
+    <mat-card class="info-card">
+      <mat-card-header>
+        <mat-card-title
+          >Bienvenue sur l'application de candidature de l'Université
+          d'Occitanie</mat-card-title
+        >
+      </mat-card-header>
+      <mat-card-content>
+        <h3>Information générale :</h3>
+        <p>
+          Pour prendre connaissance des conditions relatives au dépôt de votre
+          demande dans la formation de votre choix, consultez le site de votre
+          Faculté, Institut ou IUT :
+          <a
+            href="https://www.umontpellier.fr/formation/admission-et-inscription"
+            target="_blank"
+            >site de l'Université</a
+          >
+        </p>
+
+        <h3>Calendrier :</h3>
+        <p>
+          Chaque formation a une période de candidatures spécifique. S'il n'y a
+          pas encore de période fixée en 2025, merci d'attendre la mise à jour.
+        </p>
+
+        <p>
+          Consultez la documentation d'aide eCandidat et la Foire aux Questions
+          (rubrique "Aide/FAQ").
+        </p>
+
+        <h3>Avant de créer votre compte :</h3>
+        <ol>
+          <li>
+            Vérifiez que vous trouvez votre formation dans l'onglet "Offre de
+            formation".
+          </li>
+          <li>Créez votre compte une fois votre formation trouvée.</li>
+          <li>Constituez votre dossier pour la formation souhaitée.</li>
+        </ol>
+
+        <h3>Vous ne trouvez pas votre formation ?</h3>
+        <p>
+          Il existe une autre plateforme eCandidat pour l'Université
+          d'Occitanie, consultable dans la FAQ, question 2.
+        </p>
+      </mat-card-content>
+    </mat-card>
+  </section>
+
+  <section class="login-section">
+    <mat-card class="login-card">
+      <mat-card-header>
+        <mat-card-title>Accéder à votre espace</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="login-actions">
+          <a mat-raised-button color="primary" routerLink="/login">
+            <mat-icon>login</mat-icon>
+            Se connecter
+          </a>
+          <a mat-raised-button color="accent" routerLink="/register">
+            <mat-icon>person_add</mat-icon>
+            Créer un compte
+          </a>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </section>
+</div>

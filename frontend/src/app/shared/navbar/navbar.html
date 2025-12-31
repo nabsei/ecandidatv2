@@ -1,0 +1,140 @@
+<mat-toolbar class="navbar">
+  <div class="navbar-container">
+    <a routerLink="/" class="navbar-brand">
+      <mat-icon class="navbar-icon">account_balance</mat-icon>
+      <span class="navbar-title">eCandidat</span>
+    </a>
+
+    <button
+      mat-icon-button
+      class="mobile-menu-button"
+      (click)="toggleMobileMenu()"
+      aria-label="Menu"
+    >
+      <mat-icon>{{ mobileMenuOpen() ? 'close' : 'menu' }}</mat-icon>
+    </button>
+
+    <nav class="navbar-menu desktop-menu">
+      <a
+        mat-button
+        routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <mat-icon>home</mat-icon>
+        Accueil
+      </a>
+
+      <a mat-button routerLink="/faq" routerLinkActive="active">
+        <mat-icon>help</mat-icon>
+        FAQ
+      </a>
+
+      <a mat-button routerLink="/formations" routerLinkActive="active">
+        <mat-icon>school</mat-icon>
+        Offre de Formation
+      </a>
+
+      @if (authService.isAuthenticated()) {
+        @if (authService.isAdmin()) {
+          <a mat-button routerLink="/admin" routerLinkActive="active">
+            <mat-icon>admin_panel_settings</mat-icon>
+            Administration
+          </a>
+        } @else {
+          <a mat-button routerLink="/dashboard" routerLinkActive="active">
+            <mat-icon>dashboard</mat-icon>
+            Mon Espace
+          </a>
+        }
+
+        <button mat-button (click)="logout()" class="logout-button">
+          <mat-icon>logout</mat-icon>
+          Déconnexion
+        </button>
+      } @else {
+        <a mat-button routerLink="/login" routerLinkActive="active">
+          <mat-icon>login</mat-icon>
+          Connexion
+        </a>
+      }
+    </nav>
+  </div>
+</mat-toolbar>
+
+@if (mobileMenuOpen()) {
+  <div class="mobile-menu-backdrop" (click)="closeMobileMenu()"></div>
+  <nav class="mobile-menu">
+    <mat-nav-list>
+      <a
+        mat-list-item
+        routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeMobileMenu()"
+      >
+        <mat-icon matListItemIcon>home</mat-icon>
+        <span matListItemTitle>Accueil</span>
+      </a>
+
+      <a
+        mat-list-item
+        routerLink="/faq"
+        routerLinkActive="active"
+        (click)="closeMobileMenu()"
+      >
+        <mat-icon matListItemIcon>help</mat-icon>
+        <span matListItemTitle>FAQ</span>
+      </a>
+
+      <a
+        mat-list-item
+        routerLink="/formations"
+        routerLinkActive="active"
+        (click)="closeMobileMenu()"
+      >
+        <mat-icon matListItemIcon>school</mat-icon>
+        <span matListItemTitle>Offre de Formation</span>
+      </a>
+
+      @if (authService.isAuthenticated()) {
+        @if (authService.isAdmin()) {
+          <a
+            mat-list-item
+            routerLink="/admin"
+            routerLinkActive="active"
+            (click)="closeMobileMenu()"
+          >
+            <mat-icon matListItemIcon>admin_panel_settings</mat-icon>
+            <span matListItemTitle>Administration</span>
+          </a>
+        } @else {
+          <a
+            mat-list-item
+            routerLink="/dashboard"
+            routerLinkActive="active"
+            (click)="closeMobileMenu()"
+          >
+            <mat-icon matListItemIcon>dashboard</mat-icon>
+            <span matListItemTitle>Mon Espace</span>
+          </a>
+        }
+
+        <a mat-list-item (click)="logout()">
+          <mat-icon matListItemIcon>logout</mat-icon>
+          <span matListItemTitle>Déconnexion</span>
+        </a>
+      } @else {
+        <a
+          mat-list-item
+          routerLink="/login"
+          routerLinkActive="active"
+          (click)="closeMobileMenu()"
+        >
+          <mat-icon matListItemIcon>login</mat-icon>
+          <span matListItemTitle>Connexion</span>
+        </a>
+      }
+    </mat-nav-list>
+  </nav>
+}

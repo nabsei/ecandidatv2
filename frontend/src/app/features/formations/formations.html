@@ -1,0 +1,88 @@
+<div class="formations-container">
+  <div class="formations-header">
+    <h1>Offre de Formation</h1>
+    <p class="subtitle">
+      Découvrez toutes les formations proposées par l'Université d'Occitanie
+    </p>
+
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Rechercher une formation</mat-label>
+      <input
+        matInput
+        [formControl]="searchControl"
+        placeholder="Ex: Master en Physique"
+      />
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+  </div>
+
+  @if (loading()) {
+  <div class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Chargement des formations...</p>
+  </div>
+  } @else { @if (getUfrKeys().length === 0) {
+  <mat-card>
+    <mat-card-content>
+      <p class="no-results">Aucune formation ne correspond à votre recherche.</p>
+    </mat-card-content>
+  </mat-card>
+  } @else {
+  <mat-accordion class="formations-accordion">
+    @for (ufr of getUfrKeys(); track ufr) {
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title [class]="ufrColors[ufr]">
+          <mat-icon>school</mat-icon>
+          {{ ufr }}
+          <span class="formation-count"
+            >({{ filteredFormationsByUfr()[ufr].length }} formation{{
+              filteredFormationsByUfr()[ufr].length > 1 ? "s" : ""
+            }})</span
+          >
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <table class="formations-table">
+        <thead>
+          <tr>
+            <th>Formation</th>
+            <th>Niveau</th>
+            <th>Date de candidature</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (formation of filteredFormationsByUfr()[ufr]; track formation.id)
+          {
+          <tr>
+            <td>{{ formation.name }}</td>
+            <td>
+              <span class="niveau-badge">{{ formation.level }}</span>
+            </td>
+            <td>{{ formation.applicationDate }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </mat-expansion-panel>
+    }
+  </mat-accordion>
+  } }
+
+  <mat-card class="info-card">
+    <mat-card-content>
+      <h3>Pour plus d'informations</h3>
+      <p>
+        Veuillez consulter notre site web ou contacter le service des
+        admissions :
+      </p>
+      <p>
+        <strong>Téléphone :</strong> 04.34.43.24.46<br />
+        <strong>Email :</strong>
+        <a href="mailto:eco-inscription@umontpellier.fr"
+          >eco-inscription&#64;umontpellier.fr</a
+        >
+      </p>
+    </mat-card-content>
+  </mat-card>
+</div>
