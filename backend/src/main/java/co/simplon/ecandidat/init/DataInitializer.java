@@ -13,6 +13,9 @@ import co.simplon.ecandidat.entity.UserEntity;
 import co.simplon.ecandidat.repository.FormationRepository;
 import co.simplon.ecandidat.repository.RoleRepository;
 import co.simplon.ecandidat.repository.UserRepository;
+import co.simplon.ecandidat.service.MontpellierFormationService;
+
+import java.util.List;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -21,15 +24,18 @@ public class DataInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final FormationRepository formationRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MontpellierFormationService montpellierFormationService;
 
     public DataInitializer(RoleRepository roleRepository,
                           UserRepository userRepository,
                           FormationRepository formationRepository,
-                          PasswordEncoder passwordEncoder) {
+                          PasswordEncoder passwordEncoder,
+                          MontpellierFormationService montpellierFormationService) {
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.formationRepository = formationRepository;
         this.passwordEncoder = passwordEncoder;
+        this.montpellierFormationService = montpellierFormationService;
     }
 
     @Override
@@ -72,31 +78,31 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         if (formationRepository.count() == 0) {
-            formationRepository.save(new FormationEntity(
-                    "Master en Santé Publique", "Master", "UFR Santé", "01/03/2025 - 30/04/2025"));
-            formationRepository.save(new FormationEntity(
-                    "Doctorat en Médecine", "Doctorat", "UFR Santé", "15/01/2025 - 15/03/2025"));
-            formationRepository.save(new FormationEntity(
-                    "Doctorat en Pharmacie", "Doctorat", "UFR Santé", "15/01/2025 - 15/03/2025"));
+            System.out.println("Chargement des formations depuis l'API de Montpellier...");
 
-            formationRepository.save(new FormationEntity(
-                    "Licence en Biologie", "Licence", "UFR Sciences", "20/01/2025 - 20/03/2025"));
-            formationRepository.save(new FormationEntity(
-                    "Master en Physique", "Master", "UFR Sciences", "01/03/2025 - 30/04/2025"));
-            formationRepository.save(new FormationEntity(
-                    "Doctorat en Chimie", "Doctorat", "UFR Sciences", "15/01/2025 - 15/03/2025"));
+            List<FormationEntity> formations = montpellierFormationService.fetchFormationsFromMontpellier();
 
-            formationRepository.save(new FormationEntity(
-                    "Licence en Histoire", "Licence", "UFR Lettres et Sciences Humaines", "20/01/2025 - 20/03/2025"));
-            formationRepository.save(new FormationEntity(
-                    "Master en Philosophie", "Master", "UFR Lettres et Sciences Humaines", "01/03/2025 - 30/04/2025"));
+            if (!formations.isEmpty()) {
+                formationRepository.saveAll(formations);
+                System.out.println(formations.size() + " formations de Montpellier importées avec succès");
+            } else {
+                System.out.println("Échec du chargement depuis l'API, création de formations de test...");
 
-            formationRepository.save(new FormationEntity(
-                    "Licence en Droit", "Licence", "UFR Droit et Sciences Politiques", "20/01/2025 - 20/03/2025"));
-            formationRepository.save(new FormationEntity(
-                    "Master en Droit Public", "Master", "UFR Droit et Sciences Politiques", "01/03/2025 - 30/04/2025"));
+                formationRepository.save(new FormationEntity(
+                        "Master en Santé Publique", "Master 2", "UFR Santé", "Candidatures 2024-2025"));
+                formationRepository.save(new FormationEntity(
+                        "Master en Biologie", "Master 1", "UFR Sciences", "Candidatures 2024-2025"));
+                formationRepository.save(new FormationEntity(
+                        "Master en Informatique", "Master 2", "UFR Informatique", "Candidatures 2024-2025"));
+                formationRepository.save(new FormationEntity(
+                        "Master en Droit", "Master 1", "UFR Droit et Sciences Politiques", "Candidatures 2024-2025"));
+                formationRepository.save(new FormationEntity(
+                        "Master en Économie", "Master 2", "UFR Économie et Gestion", "Candidatures 2024-2025"));
+                formationRepository.save(new FormationEntity(
+                        "Master en Histoire", "Master 1", "UFR Lettres et Sciences Humaines", "Candidatures 2024-2025"));
 
-            System.out.println("Formations créées avec succès");
+                System.out.println("Formations de test créées avec succès");
+            }
         }
     }
 }

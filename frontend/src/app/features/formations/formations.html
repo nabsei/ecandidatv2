@@ -1,88 +1,198 @@
 <div class="formations-container">
+  <!-- En-tête avec recherche -->
   <div class="formations-header">
-    <h1>Offre de Formation</h1>
+    <h1>Catalogue des Formations</h1>
     <p class="subtitle">
-      Découvrez toutes les formations proposées par l'Université d'Occitanie
+      Université d'Occitanie - Année universitaire 2024-2025
     </p>
 
+    <!-- Barre de recherche avec autocomplétion -->
     <mat-form-field appearance="outline" class="search-field">
       <mat-label>Rechercher une formation</mat-label>
       <input
         matInput
         [formControl]="searchControl"
-        placeholder="Ex: Master en Physique"
+        [matAutocomplete]="auto"
+        placeholder="Nom de formation, domaine, diplôme..."
       />
       <mat-icon matPrefix>search</mat-icon>
+      @if (searchControl.value) {
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="clearFilters()"
+        aria-label="Effacer"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+      }
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
+        @for (option of filteredOptions | async; track option) {
+        <mat-option [value]="option">{{ option }}</mat-option>
+        }
+      </mat-autocomplete>
     </mat-form-field>
   </div>
 
   @if (loading()) {
+  <!-- État de chargement -->
   <div class="loading-container">
     <mat-spinner></mat-spinner>
-    <p>Chargement des formations...</p>
+    <p>Chargement du catalogue des formations...</p>
   </div>
-  } @else { @if (getUfrKeys().length === 0) {
-  <mat-card>
-    <mat-card-content>
-      <p class="no-results">Aucune formation ne correspond à votre recherche.</p>
-    </mat-card-content>
-  </mat-card>
   } @else {
-  <mat-accordion class="formations-accordion">
-    @for (ufr of getUfrKeys(); track ufr) {
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title [class]="ufrColors[ufr]">
-          <mat-icon>school</mat-icon>
-          {{ ufr }}
-          <span class="formation-count"
-            >({{ filteredFormationsByUfr()[ufr].length }} formation{{
-              filteredFormationsByUfr()[ufr].length > 1 ? "s" : ""
-            }})</span
-          >
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-
-      <table class="formations-table">
-        <thead>
-          <tr>
-            <th>Formation</th>
-            <th>Niveau</th>
-            <th>Date de candidature</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (formation of filteredFormationsByUfr()[ufr]; track formation.id)
-          {
-          <tr>
-            <td>{{ formation.name }}</td>
-            <td>
-              <span class="niveau-badge">{{ formation.level }}</span>
-            </td>
-            <td>{{ formation.applicationDate }}</td>
-          </tr>
-          }
-        </tbody>
-      </table>
-    </mat-expansion-panel>
-    }
-  </mat-accordion>
-  } }
-
-  <mat-card class="info-card">
-    <mat-card-content>
-      <h3>Pour plus d'informations</h3>
-      <p>
-        Veuillez consulter notre site web ou contacter le service des
-        admissions :
-      </p>
-      <p>
-        <strong>Téléphone :</strong> 04.34.43.24.46<br />
-        <strong>Email :</strong>
-        <a href="mailto:eco-inscription@umontpellier.fr"
-          >eco-inscription&#64;umontpellier.fr</a
+  <!-- Layout deux colonnes -->
+  <div class="content-layout">
+    <!-- Sidebar Filtres à gauche -->
+    <aside class="filters-sidebar">
+      <div class="filters-header">
+        <h2>Filtres</h2>
+        <button
+          mat-stroked-button
+          color="accent"
+          (click)="clearFilters()"
+          class="clear-btn"
+          [disabled]="!hasActiveFilters()"
         >
+          <mat-icon>clear_all</mat-icon>
+          Réinitialiser
+        </button>
+      </div>
+
+      <!-- Filtres par UFR -->
+      <div class="filter-group">
+        <h3 class="filter-title">
+          <mat-icon>account_balance</mat-icon>
+          Composante
+        </h3>
+        <div class="ufr-filters">
+          @for (ufr of ufrList; track ufr.name) {
+          <div
+            class="ufr-chip"
+            [class.selected]="selectedUfr() === ufr.name"
+            (click)="selectUfr(ufr.name)"
+          >
+            <mat-icon [style.color]="ufr.color">{{ ufr.icon }}</mat-icon>
+            <span class="ufr-name">{{ ufr.name }}</span>
+            <span class="ufr-count">({{ getUfrCount(ufr.name) }})</span>
+          </div>
+          }
+        </div>
+      </div>
+
+      <!-- Filtres par niveau -->
+      <div class="filter-group">
+        <h3 class="filter-title">
+          <mat-icon>school</mat-icon>
+          Niveau
+        </h3>
+        <mat-chip-set aria-label="Niveaux de formation">
+          @for (level of levelsList(); track level) {
+          <mat-chip
+            [highlighted]="selectedLevel() === level"
+            (click)="selectLevel(level)"
+          >
+            {{ level }} ({{ getLevelCount(level) }})
+          </mat-chip>
+          }
+        </mat-chip-set>
+      </div>
+    </aside>
+
+    <!-- Contenu principal à droite -->
+    <main class="results-main">
+      <!-- Résultats -->
+      <section class="results-section">
+    <div class="results-header">
+      <h2 class="section-title">
+        <mat-icon>list</mat-icon>
+        Résultats de recherche
+      </h2>
+      <p class="results-count">
+        <strong>{{ filteredFormations().length }}</strong> formation{{
+          filteredFormations().length > 1 ? "s" : ""
+        }}
+        trouvée{{ filteredFormations().length > 1 ? "s" : "" }}
       </p>
-    </mat-card-content>
-  </mat-card>
+    </div>
+
+    @if (filteredFormations().length === 0) {
+    <!-- Aucun résultat -->
+    <mat-card class="no-results-card">
+      <mat-card-content>
+        <mat-icon>search_off</mat-icon>
+        <h3>Aucune formation trouvée</h3>
+        <p>Essayez de modifier vos critères de recherche</p>
+      </mat-card-content>
+    </mat-card>
+    } @else {
+    <!-- Liste des formations -->
+    <div class="formations-grid">
+      @for (formation of filteredFormations(); track formation.id) {
+      <mat-card class="formation-card">
+        <mat-card-header>
+          <mat-icon
+            mat-card-avatar
+            [style.color]="getUfrColor(formation.ufr)"
+            >{{ getUfrIcon(formation.ufr) }}</mat-icon
+          >
+          <mat-card-title>{{ formation.name }}</mat-card-title>
+          <mat-card-subtitle>{{ formation.ufr }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="formation-details">
+            <div class="detail-item">
+              <mat-icon>school</mat-icon>
+              <span class="niveau-badge">{{ formation.level }}</span>
+            </div>
+            <div class="detail-item">
+              <mat-icon>event</mat-icon>
+              <span>{{ formation.applicationDate }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button color="primary">
+            <mat-icon>info</mat-icon>
+            En savoir plus
+          </button>
+          @if (isAuthenticated()) {
+          <button mat-button color="accent" (click)="onCandidater(formation)">
+            <mat-icon>arrow_forward</mat-icon>
+            Candidater
+          </button>
+          }
+        </mat-card-actions>
+      </mat-card>
+      }
+    </div>
+    }
+  </section>
+
+      <!-- Carte d'informations -->
+      <mat-card class="info-card">
+        <mat-card-content>
+          <mat-icon class="info-icon">help_outline</mat-icon>
+          <h3>Besoin d'aide ?</h3>
+          <p>
+            Notre équipe est disponible pour vous accompagner dans votre recherche
+            de formation et votre processus de candidature.
+          </p>
+          <div class="contact-info">
+            <div class="contact-item">
+              <mat-icon>phone</mat-icon>
+              <span>04.34.43.24.46</span>
+            </div>
+            <div class="contact-item">
+              <mat-icon>email</mat-icon>
+              <a href="mailto:eco-inscription@umontpellier.fr"
+                >eco-inscription@umontpellier.fr</a
+              >
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </main>
+  </div>
+  }
 </div>

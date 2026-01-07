@@ -17,12 +17,4 @@ export class FormationService {
   loadFormationById(id: string): Observable<Formation> {
     return this.http.get<Formation>(`${this.apiUrl}/${id}`);
   }
-
-  loadFormationsByUfr(ufr: string): Observable<Formation[]> {
-    return this.http.get<Formation[]>(`${this.apiUrl}/ufr/${ufr}`);
-  }
-
-  loadFormationsByNiveau(niveau: string): Observable<Formation[]> {
-    return this.http.get<Formation[]>(`${this.apiUrl}/niveau/${niveau}`);
-  }
 }
