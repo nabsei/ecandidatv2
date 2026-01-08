@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.simplon.ecandidat.entity.FormationEntity;
 import co.simplon.ecandidat.service.FormationService;
+import co.simplon.ecandidat.service.MontpellierFormationService;
 import jakarta.validation.Valid;
 
 @RestController
@@ -23,14 +24,16 @@ import jakarta.validation.Valid;
 public class FormationController {
 
     private final FormationService formationService;
+    private final MontpellierFormationService montpellierFormationService;
 
-    public FormationController(FormationService formationService) {
+    public FormationController(FormationService formationService, MontpellierFormationService montpellierFormationService) {
         this.formationService = formationService;
+        this.montpellierFormationService = montpellierFormationService;
     }
 
     @GetMapping
     public ResponseEntity<List<FormationEntity>> getAllFormations() {
-        List<FormationEntity> formations = formationService.getAllFormations();
+        List<FormationEntity> formations = montpellierFormationService.fetchFormationsFromMontpellier();
         return ResponseEntity.ok(formations);
     }
 
@@ -44,6 +47,12 @@ public class FormationController {
     @GetMapping("/ufr/{ufr}")
     public ResponseEntity<List<FormationEntity>> getFormationsByUfr(@PathVariable String ufr) {
         List<FormationEntity> formations = formationService.getFormationsByUfr(ufr);
+        return ResponseEntity.ok(formations);
+    }
+
+    @GetMapping("/montpellier")
+    public ResponseEntity<List<FormationEntity>> getFormationsFromMontpellier() {
+        List<FormationEntity> formations = montpellierFormationService.fetchFormationsFromMontpellier();
         return ResponseEntity.ok(formations);
     }
 

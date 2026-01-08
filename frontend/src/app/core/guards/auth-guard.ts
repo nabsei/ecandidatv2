@@ -6,12 +6,11 @@ export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (authService.isAuthenticated()) {
-    return true;
+  const hasToken = authService.hasToken();
+  if (!hasToken) {
+    router.navigate(['/']);
   }
-
-  router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
-  return false;
+  return hasToken;
 };
 
 export const adminGuard: CanActivateFn = (route, state) => {

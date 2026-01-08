@@ -82,7 +82,7 @@ public class MontpellierFormationService {
 
             do {
                 String url = API_URL +
-                    "?where=diplome_lib=\"Masters hors enseignement\" and etablissement_compos_lib=\"Université de Montpellier\"" +
+                    "?where=(diplome_lib=\"Autres licences\" or diplome_lib=\"Masters hors enseignement\" or diplome_lib=\"Doctorat\") and etablissement_compos_lib=\"Université de Montpellier\"" +
                     "&limit=" + limit +
                     "&offset=" + offset;
 
@@ -151,14 +151,20 @@ public class MontpellierFormationService {
 
     private String mapLevel(String niveau, Integer degetu) {
         if (degetu != null) {
+            if (degetu == 1) return "Licence 1";
+            if (degetu == 2) return "Licence 2";
+            if (degetu == 3) return "Licence 3";
             if (degetu == 4) return "Master 1";
             if (degetu == 5) return "Master 2";
+            if (degetu == 6) return "Doctorat 1";
+            if (degetu == 7) return "Doctorat 2";
+            if (degetu == 8) return "Doctorat 3";
         }
 
         if ("01".equals(niveau)) return "Master 1";
         if ("02".equals(niveau)) return "Master 2";
 
-        return "Master";
+        return "Formation";
     }
 
     private String mapDisciplineToUfr(String gdDiscipline, String sectDisciplinaire, String discipline) {
@@ -199,7 +205,7 @@ public class MontpellierFormationService {
 
     private String mapApplicationDate(String anneeUniversitaire) {
         if (anneeUniversitaire != null && !anneeUniversitaire.isEmpty()) {
-            return "Candidatures 2024-2025";
+            return "Candidatures 2025-2026";
         }
         return "À définir";
     }

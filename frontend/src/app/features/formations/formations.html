@@ -1,12 +1,10 @@
 <div class="formations-container">
-  <!-- En-tête avec recherche -->
   <div class="formations-header">
     <h1>Catalogue des Formations</h1>
     <p class="subtitle">
-      Université d'Occitanie - Année universitaire 2024-2025
+      Université d'Occitanie - Année universitaire 2025-2026
     </p>
 
-    <!-- Barre de recherche avec autocomplétion -->
     <mat-form-field appearance="outline" class="search-field">
       <mat-label>Rechercher une formation</mat-label>
       <input
@@ -35,15 +33,12 @@
   </div>
 
   @if (loading()) {
-  <!-- État de chargement -->
   <div class="loading-container">
     <mat-spinner></mat-spinner>
     <p>Chargement du catalogue des formations...</p>
   </div>
   } @else {
-  <!-- Layout deux colonnes -->
   <div class="content-layout">
-    <!-- Sidebar Filtres à gauche -->
     <aside class="filters-sidebar">
       <div class="filters-header">
         <h2>Filtres</h2>
@@ -59,7 +54,6 @@
         </button>
       </div>
 
-      <!-- Filtres par UFR -->
       <div class="filter-group">
         <h3 class="filter-title">
           <mat-icon>account_balance</mat-icon>
@@ -80,7 +74,6 @@
         </div>
       </div>
 
-      <!-- Filtres par niveau -->
       <div class="filter-group">
         <h3 class="filter-title">
           <mat-icon>school</mat-icon>
@@ -99,9 +92,7 @@
       </div>
     </aside>
 
-    <!-- Contenu principal à droite -->
     <main class="results-main">
-      <!-- Résultats -->
       <section class="results-section">
     <div class="results-header">
       <h2 class="section-title">
@@ -117,7 +108,6 @@
     </div>
 
     @if (filteredFormations().length === 0) {
-    <!-- Aucun résultat -->
     <mat-card class="no-results-card">
       <mat-card-content>
         <mat-icon>search_off</mat-icon>
@@ -126,9 +116,8 @@
       </mat-card-content>
     </mat-card>
     } @else {
-    <!-- Liste des formations -->
     <div class="formations-grid">
-      @for (formation of filteredFormations(); track formation.id) {
+      @for (formation of paginatedFormations(); track formation.id) {
       <mat-card class="formation-card">
         <mat-card-header>
           <mat-icon
@@ -166,10 +155,20 @@
       </mat-card>
       }
     </div>
+
+    <mat-paginator
+      [length]="filteredFormations().length"
+      [pageSize]="pageSize()"
+      [pageIndex]="pageIndex()"
+      [pageSizeOptions]="[12, 24, 48, 96]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+      class="formations-paginator"
+    >
+    </mat-paginator>
     }
   </section>
 
-      <!-- Carte d'informations -->
       <mat-card class="info-card">
         <mat-card-content>
           <mat-icon class="info-icon">help_outline</mat-icon>

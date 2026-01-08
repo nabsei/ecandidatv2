@@ -10,6 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { FormationService } from '../../core/services/formation.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Formation } from '../../core/models/formation';
@@ -29,6 +30,7 @@ import { catchError, of, startWith, map } from 'rxjs';
     MatChipsModule,
     MatAutocompleteModule,
     MatBadgeModule,
+    MatPaginatorModule,
   ],
   templateUrl: './formations.html',
   styleUrl: './formations.css',
@@ -42,6 +44,8 @@ export class Formations implements OnInit {
   protected readonly allFormations = signal<Formation[]>([]);
   protected readonly selectedUfr = signal<string | null>(null);
   protected readonly selectedLevel = signal<string | null>(null);
+  protected readonly pageIndex = signal(0);
+  protected readonly pageSize = signal(12);
 
   protected readonly searchControl = this.fb.nonNullable.control('');
 
@@ -56,7 +60,23 @@ export class Formations implements OnInit {
 
   protected readonly levelsList = computed(() => {
     const levels = [...new Set(this.allFormations().map(f => f.level))];
-    return levels.sort();
+
+    const levelOrder: { [key: string]: number } = {
+      'Licence 1': 1,
+      'Licence 2': 2,
+      'Licence 3': 3,
+      'Master 1': 4,
+      'Master 2': 5,
+      'Doctorat 1': 6,
+      'Doctorat 2': 7,
+      'Doctorat 3': 8,
+    };
+
+    return levels.sort((a, b) => {
+      const orderA = levelOrder[a] ?? 999;
+      const orderB = levelOrder[b] ?? 999;
+      return orderA - orderB;
+    });
   });
 
   protected readonly searchTerm = signal('');
@@ -84,6 +104,13 @@ export class Formations implements OnInit {
     }
 
     return formations;
+  });
+
+  protected readonly paginatedFormations = computed(() => {
+    const formations = this.filteredFormations();
+    const startIndex = this.pageIndex() * this.pageSize();
+    const endIndex = startIndex + this.pageSize();
+    return formations.slice(startIndex, endIndex);
   });
 
   protected readonly filteredOptions = this.searchControl.valueChanges.pipe(
@@ -119,6 +146,7 @@ export class Formations implements OnInit {
 
     this.searchControl.valueChanges.subscribe(value => {
       this.searchTerm.set(value || '');
+      this.pageIndex.set(0);
     });
   }
 
@@ -156,6 +184,7 @@ export class Formations implements OnInit {
     } else {
       this.selectedUfr.set(ufrName);
     }
+    this.pageIndex.set(0);
   }
 
   selectLevel(level: string): void {
@@ -164,6 +193,7 @@ export class Formations implements OnInit {
     } else {
       this.selectedLevel.set(level);
     }
+    this.pageIndex.set(0);
   }
 
   clearFilters(): void {
@@ -171,6 +201,12 @@ export class Formations implements OnInit {
     this.searchTerm.set('');
     this.selectedUfr.set(null);
     this.selectedLevel.set(null);
+    this.pageIndex.set(0);
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.pageIndex.set(event.pageIndex);
+    this.pageSize.set(event.pageSize);
   }
 
   getUfrIcon(ufrName: string): string {

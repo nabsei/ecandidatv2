@@ -7,35 +7,24 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import co.simplon.ecandidat.entity.FormationEntity;
 import co.simplon.ecandidat.entity.RoleEntity;
 import co.simplon.ecandidat.entity.UserEntity;
-import co.simplon.ecandidat.repository.FormationRepository;
 import co.simplon.ecandidat.repository.RoleRepository;
 import co.simplon.ecandidat.repository.UserRepository;
-import co.simplon.ecandidat.service.MontpellierFormationService;
-
-import java.util.List;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
 
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
-    private final FormationRepository formationRepository;
     private final PasswordEncoder passwordEncoder;
-    private final MontpellierFormationService montpellierFormationService;
 
     public DataInitializer(RoleRepository roleRepository,
                           UserRepository userRepository,
-                          FormationRepository formationRepository,
-                          PasswordEncoder passwordEncoder,
-                          MontpellierFormationService montpellierFormationService) {
+                          PasswordEncoder passwordEncoder) {
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
-        this.formationRepository = formationRepository;
         this.passwordEncoder = passwordEncoder;
-        this.montpellierFormationService = montpellierFormationService;
     }
 
     @Override
@@ -75,34 +64,6 @@ public class DataInitializer implements CommandLineRunner {
 
             userRepository.save(user);
             System.out.println("Utilisateur test créé: user@test.com / password");
-        }
-
-        if (formationRepository.count() == 0) {
-            System.out.println("Chargement des formations depuis l'API de Montpellier...");
-
-            List<FormationEntity> formations = montpellierFormationService.fetchFormationsFromMontpellier();
-
-            if (!formations.isEmpty()) {
-                formationRepository.saveAll(formations);
-                System.out.println(formations.size() + " formations de Montpellier importées avec succès");
-            } else {
-                System.out.println("Échec du chargement depuis l'API, création de formations de test...");
-
-                formationRepository.save(new FormationEntity(
-                        "Master en Santé Publique", "Master 2", "UFR Santé", "Candidatures 2024-2025"));
-                formationRepository.save(new FormationEntity(
-                        "Master en Biologie", "Master 1", "UFR Sciences", "Candidatures 2024-2025"));
-                formationRepository.save(new FormationEntity(
-                        "Master en Informatique", "Master 2", "UFR Informatique", "Candidatures 2024-2025"));
-                formationRepository.save(new FormationEntity(
-                        "Master en Droit", "Master 1", "UFR Droit et Sciences Politiques", "Candidatures 2024-2025"));
-                formationRepository.save(new FormationEntity(
-                        "Master en Économie", "Master 2", "UFR Économie et Gestion", "Candidatures 2024-2025"));
-                formationRepository.save(new FormationEntity(
-                        "Master en Histoire", "Master 1", "UFR Lettres et Sciences Humaines", "Candidatures 2024-2025"));
-
-                System.out.println("Formations de test créées avec succès");
-            }
         }
     }
 }

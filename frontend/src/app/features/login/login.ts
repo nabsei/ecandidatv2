@@ -52,7 +52,7 @@ export class Login {
     const { email, password } = this.loginForm.getRawValue();
 
     this.authService
-      .login(email, password)
+      .signIn(email, password)
       .pipe(
         tap(() => {
           this.notificationService.success('Connexion réussie !');

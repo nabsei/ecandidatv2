@@ -41,7 +41,6 @@
   font-weight: 700;
 }
 
-/* Menu Desktop */
 .desktop-menu {
   display: flex;
   gap: 0.5rem;
@@ -75,13 +74,11 @@
   color: white !important;
 }
 
-/* Bouton hamburger mobile */
 .mobile-menu-button {
   display: none;
   color: white !important;
 }
 
-/* Menu mobile */
 .mobile-menu {
   display: none;
   position: fixed;
@@ -125,7 +122,6 @@
   color: #c10330;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .desktop-menu {
     display: none !important;

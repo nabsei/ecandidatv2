@@ -9,7 +9,7 @@ import { User } from '../models/user';
   providedIn: 'root',
 })
 export class AuthService {
-  readonly http = inject(HttpClient);
+  http = inject(HttpClient);
   readonly apiUrl = 'http://localhost:8080/auth';
 
   readonly isAuthenticated = signal(false);
@@ -17,7 +17,7 @@ export class AuthService {
   readonly token = signal<string | null>(null);
 
   constructor() {
-    const storedToken = localStorage.getItem('token');
+    const storedToken = localStorage.getItem('auth_jwt');
     if (storedToken) {
       this.token.set(storedToken);
       this.isAuthenticated.set(true);
@@ -25,7 +25,8 @@ export class AuthService {
     }
   }
 
-  login(email: string, password: string): Observable<LoginDto> {
+  signIn(email: string, password: string): Observable<LoginDto> {
+    localStorage.removeItem('auth_jwt');
     const request: LoginRequest = {
       email: email,
       password: password,
@@ -35,7 +36,7 @@ export class AuthService {
       tap((response) => {
         this.token.set(response.token);
         this.isAuthenticated.set(true);
-        localStorage.setItem('token', response.token);
+        localStorage.setItem('auth_jwt', response.token);
         this.loadCurrentUser();
       })
     );
@@ -49,7 +50,7 @@ export class AuthService {
     this.token.set(null);
     this.isAuthenticated.set(false);
     this.currentUser.set(null);
-    localStorage.removeItem('token');
+    localStorage.removeItem('auth_jwt');
   }
 
   private loadCurrentUser(): void {
@@ -81,6 +82,22 @@ export class AuthService {
 
   getToken(): string | null {
     return this.token();
+  }
+
+  hasToken(): boolean {
+    const token = localStorage.getItem('auth_jwt');
+    return token !== null && token !== '';
+  }
+
+  getRoles(): string[] {
+    const token = localStorage.getItem('auth_jwt');
+    if (token !== null) {
+      const tokenParts = token.split('.');
+      const payloadJson = atob(tokenParts[1]);
+      const payload: any = JSON.parse(payloadJson);
+      return payload.scope.split(' ');
+    }
+    return [];
   }
 
   hasRole(role: string): boolean {

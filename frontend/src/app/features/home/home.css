@@ -4,7 +4,6 @@
   padding: 2rem 1rem;
 }
 
-/* Hero Section */
 .hero-section {
   text-align: center;
   padding: 3rem 0;
@@ -32,7 +31,6 @@
   margin-top: 1rem;
 }
 
-/* Features Section */
 .features-section {
   margin: 3rem 0;
 }
@@ -76,7 +74,6 @@
   font-weight: 600;
 }
 
-/* Info Section */
 .info-section {
   margin: 3rem 0;
 }
@@ -121,7 +118,6 @@
   margin-bottom: 0.5rem;
 }
 
-/* Login Section */
 .login-section {
   margin: 3rem 0;
 }
