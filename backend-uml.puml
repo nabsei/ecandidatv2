@@ -1,0 +1,112 @@
+@startuml eCandidatV2_Backend
+title eCandidat v2 - Backend
+
+package "Controllers" {
+  class AuthController {
+    + login()
+    + register()
+  }
+
+  class FormationController {
+    + getAllFormations()
+    + getFormationById()
+    + createFormation()
+    + updateFormation()
+    + deleteFormation()
+  }
+
+  class CandidatureController {
+    + getMyCandidatures()
+    + createCandidature()
+    + getAllCandidatures()
+    + updateStatus()
+  }
+}
+
+package "Services" {
+  class AuthService {
+    + loadUserByUsername()
+  }
+
+  class TokenService {
+    + generateToken()
+  }
+
+  class FormationService {
+    + getAllFormations()
+    + getFormationById()
+    + createFormation()
+  }
+
+  class MontpellierFormationService {
+    + fetchFormationsFromMontpellier()
+  }
+
+  class CandidatureService {
+    + getAllCandidatures()
+    + getCandidaturesByUser()
+    + createCandidature()
+    + updateStatus()
+  }
+}
+
+package "Repositories" {
+  interface UserRepository
+  interface RoleRepository
+  interface FormationRepository
+  interface CandidatureRepository
+}
+
+package "Entities" {
+  class UserEntity {
+    - id
+    - firstname
+    - lastname
+    - email
+    - password
+  }
+
+  class RoleEntity {
+    - id
+    - authority
+  }
+
+  class FormationEntity {
+    - id
+    - name
+    - level
+    - ufr
+    - applicationDate
+  }
+
+  class CandidatureEntity {
+    - id
+    - nationality
+    - ine
+    - address
+    - formation
+    - status
+    - createdAt
+  }
+}
+
+AuthController --> AuthService
+AuthController --> TokenService
+FormationController --> FormationService
+FormationController --> MontpellierFormationService
+CandidatureController --> CandidatureService
+
+AuthService --> UserRepository
+FormationService --> FormationRepository
+CandidatureService --> CandidatureRepository
+
+UserRepository ..> UserEntity
+RoleRepository ..> RoleEntity
+FormationRepository ..> FormationEntity
+CandidatureRepository ..> CandidatureEntity
+
+UserEntity "*" --> "*" RoleEntity
+CandidatureEntity "*" --> "1" UserEntity
+CandidatureEntity "*" --> "1" FormationEntity
+
+@enduml

@@ -1,0 +1,13 @@
+@startuml eCandidatV2_Architecture
+title eCandidat v2 - Architecture
+
+[Frontend Angular] as Frontend
+[Backend Spring Boot] as Backend
+database "PostgreSQL" as DB
+[API Montpellier] as API
+
+Frontend --> Backend : HTTP REST
+Backend --> DB : JPA/JDBC
+Backend --> API : HTTP Client
+
+@enduml

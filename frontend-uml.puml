@@ -1,0 +1,60 @@
+@startuml eCandidatV2_Frontend
+title eCandidat v2 - Frontend
+
+package "Core" {
+  class AuthService {
+    + login()
+    + register()
+    + logout()
+    + hasToken()
+    + isAdmin()
+  }
+
+  class FormationService {
+    + getAllFormations()
+    + getFormationById()
+  }
+
+  class CandidatureService {
+    + getMyCandidatures()
+    + createCandidature()
+    + getAllCandidatures()
+  }
+
+  class NotificationService {
+    + success()
+    + error()
+  }
+
+  class AuthGuard
+  class AdminGuard
+  class AuthInterceptor
+}
+
+package "Features" {
+  class HomeComponent
+  class LoginComponent
+  class RegisterComponent
+  class FormationsComponent
+  class DashboardComponent
+  class AdminDashboardComponent
+  class FAQComponent
+}
+
+package "Shared" {
+  class NavbarComponent
+  class FooterComponent
+}
+
+AuthGuard --> AuthService
+AdminGuard --> AuthService
+AuthInterceptor --> AuthService
+
+LoginComponent --> AuthService
+RegisterComponent --> AuthService
+FormationsComponent --> FormationService
+DashboardComponent --> CandidatureService
+AdminDashboardComponent --> CandidatureService
+NavbarComponent --> AuthService
+
+@enduml
