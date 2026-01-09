@@ -129,13 +129,21 @@ frontend/src/app/
 
 - `GET /api/formations` - Liste des formations
 - `GET /api/formations/{id}` - Détails d'une formation
+- `GET /api/formations/ufr/{ufr}` - Formations par UFR
+- `GET /api/formations/montpellier` - Récupérer les formations depuis l'API Montpellier Open Data
 - `POST /api/formations` - Créer une formation (admin)
+- `PUT /api/formations/{id}` - Modifier une formation (admin)
+- `DELETE /api/formations/{id}` - Supprimer une formation (admin)
 
 ### Candidatures
 
 - `GET /api/candidatures/my` - Mes candidatures
+- `GET /api/candidatures/{id}` - Détails d'une candidature
 - `POST /api/candidatures` - Créer une candidature
+- `PUT /api/candidatures/{id}` - Modifier une candidature
+- `DELETE /api/candidatures/{id}` - Supprimer une candidature
 - `GET /api/candidatures/admin/all` - Toutes les candidatures (admin)
+- `PUT /api/candidatures/admin/{id}/status` - Mettre à jour le statut d'une candidature (admin)
 
 ## Licence
 

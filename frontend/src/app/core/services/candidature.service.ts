@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Candidature } from '../models/candidature';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CandidatureService {
   readonly http = inject(HttpClient);
-  readonly apiUrl = 'http://localhost:8080/api/candidatures';
+  readonly apiUrl = `${environment.apiUrl}/api/candidatures`;
 
   loadCandidatures(): Observable<Candidature[]> {
     return this.http.get<Candidature[]>(this.apiUrl);
@@ -35,6 +36,6 @@ export class CandidatureService {
   }
 
   updateCandidatureStatus(id: string, status: string): Observable<Candidature> {
-    return this.http.patch<Candidature>(`${this.apiUrl}/admin/${id}/status`, { status });
+    return this.http.put<Candidature>(`${this.apiUrl}/admin/${id}/status`, status);
   }
 }

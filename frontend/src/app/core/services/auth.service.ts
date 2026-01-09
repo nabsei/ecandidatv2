@@ -4,13 +4,14 @@ import { Observable, tap } from 'rxjs';
 import { LoginDto, LoginRequest } from '../models/login-dto';
 import { RegisterRequest } from '../models/register-dto';
 import { User } from '../models/user';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   http = inject(HttpClient);
-  readonly apiUrl = 'http://localhost:8080/auth';
+  readonly apiUrl = `${environment.apiUrl}/auth`;
 
   readonly isAuthenticated = signal(false);
   readonly currentUser = signal<User | null>(null);
